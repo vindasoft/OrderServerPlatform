@@ -2,11 +2,10 @@
  * @copyright vindasoft in 2026-01-01 version V1.0
  */
 
-package com.vindasoft.utils;
+package com.vindasoft.order.utils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import javax.imageio.ImageIO;
 
 /**

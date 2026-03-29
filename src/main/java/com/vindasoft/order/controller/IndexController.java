@@ -2,7 +2,7 @@
  * @copyright vindasoft in 2026-01-01 version V1.0
  */
 
-package com.vindasoft.controller;
+package com.vindasoft.order.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,12 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.stream.IntStream;
 
 /**
  * @Description: 首页控制器，处理根路径请求
- * @author: lixiaoqiang
+ * @author: jwd
  * @date: 2026-01-02
  */
 @RestController //标记为REST API控制器（它会自动把返回值转换为json格式）
