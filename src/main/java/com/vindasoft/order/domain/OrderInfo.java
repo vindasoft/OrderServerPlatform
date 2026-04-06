@@ -21,5 +21,4 @@ public class OrderInfo {
     private String updateTime;
     private String deleteTime;
     private String remark;
-    private String version;
 }
