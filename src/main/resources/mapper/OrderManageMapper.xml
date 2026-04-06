@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vindasoft.order.mapper.OrderManageMapper">
+
+    <!-- 获取订单信息 -->
+    <select id="getOrderInfo" resultType="com.vindasoft.order.domain.OrderInfo">
+        select order_id  as orderId,
+               product_id as productId,
+               order_name as orderName,
+               user_id as userId,
+               create_time as createTime
+        from t_business_order_info t
+        where t.order_id = #{orderId}
+    </select>
+
+    <!-- 获取所有订单信息 -->
+    <select id="getAllOrderInfos" resultType="com.vindasoft.order.domain.OrderInfo">
+        select order_id  as orderId,
+            product_id as productId,
+            order_name as orderName,
+            user_id as userId,
+            create_time as createTime
+        from t_business_order_info t
+        where instr(t.order_name, #{orderName}) > 0
+    </select>
+
+    <!-- 插入产品信息 -->
+    <insert id="insertOrderInfo">
+        insert into t_business_order_info(
+            order_id,
+            product_id,
+            order_name,
+            user_id,
+            create_time,
+            update_time,
+            remark
+        ) values(#{orderId},
+                 #{productId},
+                 #{orderName},
+                 #{userId},
+                 #{createTime},
+                 #{updateTime},
+                 #{remark})
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="updateOrderInfo">
+        update t_business_order_info
+        set order_name=#{orderName},
+            update_time=#{updateTime},
+            remark=#{remark}
+        where order_id=#{orderId}
+    </update>
+
+    <!-- 删除用户信息 -->
+    <delete id="deleteOrderInfo">
+        delete from t_business_order_info
+        where order_id = #{orderId}
+    </delete>
+</mapper>
