@@ -28,6 +28,11 @@ spring:
     url: jdbc:mysql://localhost:3306/vindasoft?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=true&serverTimezone=GMT%2B8
     username: root
     password: jwd123456
+  # 安全配置: 配置用户名、密码后不用在控制台打印用户名和密码
+  security:
+    user:
+      name: 123
+      password: 123
 
 # 系统服务的环境配置
 server:
@@ -51,11 +56,20 @@ logging:
 
 # Mybatis配置
 mybatis:
-  # 告诉mybatis 哪些包下的类需要映射
-  type-aliases-package: com.vindasoft.**.mapper
+  # 告诉mybatis 哪些包下的类需要映射(去哪里找对应的实体类映射)
+  type-aliases-package: com.vindasoft.**.domain
   # 告诉mybatis 哪些包下的xml文件需要映射
   mapper-locations: classpath*:mapper/**/*Mapper.xml
   configuration:
     # 日志实现：使用slf4j输出mybatis的sql日志（包含mybatis执行的SQL语句）
     # 注意：mybatis的日志级别高于spring的日志级别
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# 令牌配置
+token:
+  # token的请求头名称： 前端需要传递token的请求头名称，后端才会从请求头中获取到token
+  header: Authorization
+  # 前后端约定好的令牌密钥：用于加密/解密token的字符串
+  secret: jwd123456
+  # token有效期(300分钟)，过期后需要重新登录
+  expireTime: 300

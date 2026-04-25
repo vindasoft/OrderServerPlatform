@@ -70,6 +70,41 @@
             <artifactId>pagehelper</artifactId>
             <version>6.1.0</version>
         </dependency>
+
+        <!--
+         JWT(json web token)是一种用于身份验证的令牌，工作原理是：
+         1.用户登录成功后，服务端生成一个JWT令牌
+         2.令牌中包含用户信息，比如用户ID、角色等
+         3.客户端保存令牌，每次请求时在http请求头中携带
+         4.服务端验证令牌的有效性，无需查询数据库
+         -->
+        <!-- JWT API 接口： 包含创建和解析JWT的核心接口和抽象类 -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <!-- JWT实现： 包含JWT的具体实现，如签名算法，验证逻辑等 -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <!-- JWT jackson库： 支持用于JWT与json的序列化与反序列化，
+        如自动将java对象转json或者将json转java对象 -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <!-- Spring security安全认证框架：可实现身份认证、接口认证、访问权限控制等 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

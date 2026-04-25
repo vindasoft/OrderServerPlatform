@@ -3,7 +3,7 @@
 <mapper namespace="com.vindasoft.order.mapper.OrderManageMapper">
 
     <!-- 获取订单信息 -->
-    <select id="getOrderInfo" resultType="com.vindasoft.order.domain.OrderInfo">
+    <select id="getOrderInfo" resultType="OrderInfo">
         select order_id  as orderId,
                product_id as productId,
                order_name as orderName,
@@ -14,7 +14,7 @@
     </select>
 
     <!-- 获取所有订单信息 -->
-    <select id="getAllOrderInfos" resultType="com.vindasoft.order.domain.OrderInfo">
+    <select id="getAllOrderInfos" resultType="OrderInfo">
         select order_id  as orderId,
             product_id as productId,
             order_name as orderName,
