@@ -72,7 +72,7 @@ public class SecurityConfig {
             // 6、路径权限检查：指定哪些路径需要登录认证，哪些路径不需要登录认证
             .authorizeHttpRequests(req ->
                     // 公共接口：所有人都可以访问
-                    req.requestMatchers("/login","/register").permitAll()
+                    req.requestMatchers("/login","/register", "/profile/**").permitAll()
                     // 其他所有请求都需要认证
                     .anyRequest().authenticated()
             )

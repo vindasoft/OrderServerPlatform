@@ -41,7 +41,7 @@ public class ServiceConfig {
      *
      * @param profile 从配置文件中读取到的上传路径
      */
-    public static void setProfile(String profile) {
+    public void setProfile(String profile) {
         ServiceConfig.profile = profile;
     }
 }
