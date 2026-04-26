@@ -13,8 +13,19 @@
         where t.user_name = #{userName}
     </select>
 
+    <!-- 根据用户名称查询用户信息 -->
+    <select id="queryUserInfoByUserId" resultType="UserInfo">
+        select user_id  as userId,
+               user_name as userName,
+               password as password,
+               status as status,
+               remark as remark
+        from t_business_user_info t
+        where t.user_id = #{userId}
+    </select>
+
     <!-- 获取所有用户信息 -->
-    <select id="getAllUserInfos" resultType="UserInfo">
+    <select id="queryAllUserInfos" resultType="UserInfo">
         select user_id  as userId,
                user_name as userName,
                password as password,
@@ -29,7 +40,7 @@
     </select>
 
     <!-- 新增用户信息 -->
-    <insert id="insertUserInfo">
+    <insert id="addUserInfo">
         insert into t_business_user_info(
             user_id,
             user_name,

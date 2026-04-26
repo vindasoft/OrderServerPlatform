@@ -4,10 +4,12 @@
 
 package com.vindasoft.order.controller;
 
+import com.vindasoft.order.domain.LoginUser;
 import com.vindasoft.order.domain.OrderInfo;
 import com.vindasoft.order.domain.request.QueryOrderInfoReq;
 import com.vindasoft.order.domain.response.CommonResult;
 import com.vindasoft.order.service.OrderManageService;
+import com.vindasoft.order.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,7 @@ public class IndexController {
     @PostMapping("/queryOrderInfo")
     public CommonResult queryOrderInfo(@RequestBody QueryOrderInfoReq resquest) {
         CommonResult result = CommonResult.success();
+        LoginUser loginUser = SecurityUtils.getLoginUser();
         OrderInfo orderInfo = orderManageService.getOrderInfo(resquest);
         result.put("data",orderInfo);
         return result;

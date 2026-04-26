@@ -11,6 +11,7 @@ import com.vindasoft.order.domain.UserInfo;
 import com.vindasoft.order.domain.response.CommonResult;
 import com.vindasoft.order.service.UserService;
 
+import com.vindasoft.order.utils.SecurityUtils;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +59,18 @@ public class LoginController {
         // 4、生成JWT令牌
         String token = tokenService.createToken(loginUser);
         result = CommonResult.success("登录成功",token);
+        return result;
+    }
+
+    /**
+     * 获取当前登录用户信息
+     */
+    @PostMapping("/getUserInfo")
+    public CommonResult getUserInfo() {
+        CommonResult result = CommonResult.success();
+        String userId = SecurityUtils.getUserId();
+        UserInfo userInfo = userService.queryUserInfoByUserId(userId);
+        result.put("data",userInfo);
         return result;
     }
 }
