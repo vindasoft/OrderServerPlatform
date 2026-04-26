@@ -70,6 +70,6 @@ token:
   # token的请求头名称： 前端需要传递token的请求头名称，后端才会从请求头中获取到token
   header: Authorization
   # 前后端约定好的令牌密钥：用于加密/解密token的字符串
-  secret: jwd123456
+  secret: abc13234
   # token有效期(300分钟)，过期后需要重新登录
   expireTime: 300
