@@ -6,10 +6,14 @@ package com.vindasoft.order.configure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vindasoft.order.domain.LoginUser;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +24,12 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Description: token 验证处理类
- * 作用：JWT令牌的生成、解析、验证
- * 相当于系统的“身份证制作和检查站”
+ * @Description: token 验证处理类 作用：JWT令牌的生成、解析、验证 相当于系统的“身份证制作和检查站”
  * @author: jwd
  * @date: 2026-01-02
  */
 @Component
+@Slf4j
 public class TokenService {
     /**
      * 令牌自定义标识： http请求头中的携带的token字段名
@@ -67,9 +70,8 @@ public class TokenService {
     }
 
     /**
-     * 创建令牌
-     * 功能：根据用户的信息生成JWT+token
-     * 使用场景：用户登录成功之后调用，生成token返回给前端
+     * 创建令牌 功能：根据用户的信息生成JWT+token 使用场景：用户登录成功之后调用，生成token返回给前端
+     *
      * @param loginUser 用户信息
      */
     public String createToken(LoginUser loginUser) {
@@ -90,14 +92,84 @@ public class TokenService {
         try {
             claims.put("user_key", objectMapper.writeValueAsString(loginUser));
         } catch (Exception e) {
-            throw new RuntimeException("序列化用户信息失败",e);
+            throw new RuntimeException("序列化用户信息失败", e);
         }
 
         // 6、构建JWT token
-        return Jwts.builder()
-            .setClaims(claims) // 设置声明数据
+        return Jwts.builder().setClaims(claims) // 设置声明数据
             .setExpiration(new Date(expirationTime)) // 设置令牌有效期
             .signWith(secretKey) // 设置签名密钥
             .compact(); // 生成字符串
+    }
+
+    /**
+     * 获取用户身份信息 功能：从http请求中提取token，解析出用户信息 使用场景：拦截器中调用，验证用户是否登录
+     */
+    public LoginUser getLoginUser(HttpServletRequest request) {
+        // 1、从http请求头中获取token
+        String token = getToken(request);
+
+        // 2、判断token是否为空或者空白
+        if (StringUtils.isBlank(token)) {
+            // 用户未登录
+            log.error("用户未登录");
+            return null;
+        }
+
+        try {
+            // 3、解析token，获取用户信息
+            Claims claims = parseToken(token);
+
+            // 4、从声明数据中获取用户信息json串
+            String userJson = claims.get("user_key", String.class);
+
+            // 5、将用户信息json串反序列化，转换为LoginUser对象并返回
+            return objectMapper.readValue(userJson, LoginUser.class);
+        } catch (Exception e) {
+            // 6、解析用户信息失败
+            log.error("解析用户信息失败", e);
+        }
+        return null;
+    }
+
+    /**
+     * 从http请求中获取token
+     */
+    public String getToken(HttpServletRequest request) {
+        String token = request.getHeader(header);
+        if (StringUtils.isNotBlank(token) && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        return token;
+    }
+
+    /**
+     * 解析字符串，获取声明数据
+     *
+     * @param token
+     * @return
+     */
+    public Claims parseToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(secretKey) // 设置签名密钥
+            .build().parseClaimsJws(token) // 解析token
+            .getBody(); // 获取声明数据
+    }
+
+    /**
+     * 验证token有效期
+     *
+     * @param loginUser
+     */
+    public void verifyToken(LoginUser loginUser) {
+        // 获取过期时间
+        long expireTime = loginUser.getExpireTime();
+
+        // 获取当前时间戳
+        long nowTime = System.currentTimeMillis();
+
+        // 判断当前时间戳是否超过过期时间
+        if (expireTime <= nowTime) {
+            throw new RuntimeException("Token已过期");
+        }
     }
 }

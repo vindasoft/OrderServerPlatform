@@ -5,7 +5,7 @@
 package com.vindasoft.order.domain.request;
 
 /**
- * @Description: TODO
+ * @Description: 分页请求参数类
  * @author: jwd
  * @date: 2026-01-02
  */

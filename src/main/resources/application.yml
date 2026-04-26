@@ -71,5 +71,5 @@ token:
   header: Authorization
   # 前后端约定好的令牌密钥：用于加密/解密token的字符串
   secret: adfasdfdafasf1231safads3332dskhlahfwehrwherwlweruoieyroyywebdjfsafjd
-  # token有效期(300分钟)，过期后需要重新登录
-  expireTime: 300
+  # token有效期(30分钟)，过期后需要重新登录
+  expireTime: 30

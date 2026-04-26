@@ -7,7 +7,7 @@ package com.vindasoft.order.domain.request;
 import lombok.Data;
 
 /**
- * @Description: TODO
+ * @Description: 查询订单请求参数类
  * @author: jwd
  * @date: 2026-01-02
  */
