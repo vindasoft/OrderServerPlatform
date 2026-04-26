@@ -21,7 +21,7 @@ import java.util.List;
  * @date: 2026-01-02
  */
 @RestController //标记为REST API控制器（它会自动把返回值转换为json格式）
-@RequestMapping("/index") // 查询访问的路径
+@RequestMapping("/order") // 查询访问的路径
 public class IndexController {
     @Autowired
     private OrderManageService orderManageService;

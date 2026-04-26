@@ -21,10 +21,14 @@
             user_id as userId,
             create_time as createTime
         from t_business_order_info t
-        where instr(t.order_name, #{orderName}) > 0
+        <where>
+            <if test="orderName != null and orderName != '' ">
+                instr(t.order_name, #{orderName}) > 0
+            </if>
+        </where>
     </select>
 
-    <!-- 插入产品信息 -->
+    <!-- 新增产品信息 -->
     <insert id="insertOrderInfo">
         insert into t_business_order_info(
             order_id,
