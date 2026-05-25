@@ -26,7 +26,6 @@ public class WatermarkRemover {
             batchRemoveWatermark(inputDir, outputDir, x, y, width, height);
         } catch (IOException e) {
             System.err.println("批量处理发生错误：" + e.getMessage());
-            e.printStackTrace();
         }
     }
 

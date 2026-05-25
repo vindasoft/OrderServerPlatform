@@ -13,6 +13,7 @@ import com.vindasoft.order.service.UserService;
 
 import com.vindasoft.order.utils.SecurityUtils;
 import io.micrometer.common.util.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,13 @@ public class LoginController {
     public CommonResult login(@RequestBody LoginInfo loginInfo) {
         CommonResult result = CommonResult.success();
 
+        if (MDC.getCopyOfContextMap() != null) {
+            MDC.getCopyOfContextMap().forEach((key, value) ->
+                System.out.println("  Key: '" + key + "', Value: '" + value + "'")
+            );
+        } else {
+            System.out.println("  MDC is empty");
+        }
         // 1、校验登录接口入参参数（用户名、密码）是否为空
         if (StringUtils.isEmpty(loginInfo.getUserName()) || StringUtils.isEmpty(loginInfo.getPassword())) {
             result = CommonResult.error("登录用户名或密码为空");

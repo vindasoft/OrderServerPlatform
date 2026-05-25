@@ -71,6 +71,13 @@
             <version>6.1.0</version>
         </dependency>
 
+        <!-- Apache POI -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.2</version>
+        </dependency>
+
         <!--
          JWT(json web token)是一种用于身份验证的令牌，工作原理是：
          1.用户登录成功后，服务端生成一个JWT令牌

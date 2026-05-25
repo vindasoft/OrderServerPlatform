@@ -6,6 +6,7 @@ package com.vindasoft.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,10 +18,13 @@ import java.util.Date;
  * @date: 2026-01-02
  */
 @Data // 告诉lombok: 这个类包含getter和setter方法
+@Builder
 @AllArgsConstructor // 告诉lombok: 这个类包含有参构造方法
 @NoArgsConstructor // 告诉lombok: 这个类包含无参构造方法
 public class OrderInfo {
     private String orderId;
+
+    private String orderName;
 
     private String userId;
 
@@ -37,8 +41,7 @@ public class OrderInfo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date deleteTime;
+    // private Date deleteTime;
 
     private String remark;
 }
