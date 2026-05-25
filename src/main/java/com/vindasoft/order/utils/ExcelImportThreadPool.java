@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @Description: Excel导出工具
+ * @Description: Excel文件导入工具
  * @author: jwd
  * @date: 2026-01-02
  */
