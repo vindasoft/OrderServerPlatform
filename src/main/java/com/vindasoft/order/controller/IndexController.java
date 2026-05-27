@@ -11,10 +11,10 @@ import com.vindasoft.order.domain.response.CommonResult;
 import com.vindasoft.order.service.OrderManageService;
 import com.vindasoft.order.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -47,6 +47,7 @@ public class IndexController {
     }
 
     @PostMapping("/insertOrderInfo")
+    @Transactional(isolation = Isolation.READ_COMMITTED) // 默认隔离级别：直接使用数据库默认的隔离级别（MySQL默认为REPEATABLE_READ，Oracle默认为READ_COMMITTED）
     public CommonResult insertOrderInfo(@RequestBody OrderInfo orderInfo) {
         CommonResult result = CommonResult.success();
         int insertCount = orderManageService.insertOrderInfo(orderInfo);
@@ -55,6 +56,7 @@ public class IndexController {
     }
 
     @PostMapping("/updateOrderInfo")
+    @Transactional(isolation = Isolation.READ_COMMITTED) // 默认隔离级别为READ_COMMITTED, 表示其他事务提交后，当前事务才能读取到数据
     public CommonResult updateOrderInfo(@RequestBody OrderInfo orderInfo) {
         CommonResult result = CommonResult.success();
         int updateCount = orderManageService.updateOrderInfo(orderInfo);
@@ -63,6 +65,7 @@ public class IndexController {
     }
 
     @PostMapping("/deleteOrderInfo")
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public CommonResult deleteOrderInfo(@RequestBody OrderInfo orderInfo) {
         CommonResult result = CommonResult.success();
         int deleteCount = orderManageService.deleteOrderInfo(orderInfo.getOrderId());
