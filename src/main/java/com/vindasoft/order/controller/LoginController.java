@@ -13,6 +13,7 @@ import com.vindasoft.order.service.UserService;
 
 import com.vindasoft.order.utils.SecurityUtils;
 import io.micrometer.common.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import java.util.Objects;
  * @date: 2026-01-02
  */
 @RestController
+@Slf4j
 public class LoginController {
     @Autowired
     private UserService userService;
@@ -43,10 +45,10 @@ public class LoginController {
 
         if (MDC.getCopyOfContextMap() != null) {
             MDC.getCopyOfContextMap().forEach((key, value) ->
-                System.out.println("  Key: '" + key + "', Value: '" + value + "'")
+                log.info("  Key: '" + key + "', Value: '" + value + "'")
             );
         } else {
-            System.out.println("  MDC is empty");
+            log.warn("MDC is empty");
         }
         // 1、校验登录接口入参参数（用户名、密码）是否为空
         if (StringUtils.isEmpty(loginInfo.getUserName()) || StringUtils.isEmpty(loginInfo.getPassword())) {
