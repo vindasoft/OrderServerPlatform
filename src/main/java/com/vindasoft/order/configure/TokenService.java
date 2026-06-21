@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @Description: token 验证处理类 作用：JWT令牌的生成、解析、验证 相当于系统的“身份证制作和检查站”
  * @author: jwd
- * @date: 2026-01-02
+ * @date: 2026-05-02
  */
 @Component
 @Slf4j
