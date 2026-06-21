@@ -23,11 +23,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Component
 public class ExcelImportThreadPool implements CommandLineRunner {
+    // 生产者数量
     private static final int PRODUCER_COUNT = 1;
+
+    // 消费者数量
     private static final int CONSUMER_COUNT = 4;
+
+    // 批次大小
     private static final int BATCH_SIZE = 100;
+
+    // 阻塞队列大小
     private static final int QUEUE_SIZE = 1000;
+
+    // 线程池关闭超时时间
     private static final long SHUTDOWN_TIMEOUT_SECONDS = 60;
+
+    // 任务执行超时时间
+    private static final long TASK_EXECUTION_TIMEOUT_SECONDS = 300;
+
+    // 进度监控间隔时间
+    private static final long PROGRESS_MONITOR_INTERVAL_MS = 1000;
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
@@ -35,7 +50,7 @@ public class ExcelImportThreadPool implements CommandLineRunner {
     @Override
     public void run(String... args) {
         String excelFilePath =
-            args.length > 0 ? args[0] : "F:\\workspace\\vindasoft\\OrderServerPlatform\\largedatafile.xlsx";
+            args.length > 0 ? args[0] : "F:\\workspace\\vindasoft\\OrderServerPlatform\\largedatafile_xxx.xlsx";
 
         ExecutorService executor = null;
         try {
@@ -86,11 +101,21 @@ public class ExcelImportThreadPool implements CommandLineRunner {
 
     private static void monitorProgress(AtomicInteger processedCount, ExecutorService executor) {
         long startTime = System.currentTimeMillis();
+        long timeoutMs = TimeUnit.SECONDS.toMillis(TASK_EXECUTION_TIMEOUT_SECONDS);
 
         while (!executor.isTerminated()) {
             try {
-                Thread.sleep(1000);
-                log.info("已处理记录数：{}", processedCount.get());
+                Thread.sleep(PROGRESS_MONITOR_INTERVAL_MS);
+
+                long elapsed = System.currentTimeMillis() - startTime;
+                log.info("已处理记录数：{}，已耗时：{} 秒", processedCount.get(), elapsed / 1000);
+
+                if (elapsed > timeoutMs) {
+                    log.error("任务执行超时！已执行 {} 秒，超过限制 {} 秒",
+                        elapsed / 1000, TASK_EXECUTION_TIMEOUT_SECONDS);
+                    executor.shutdownNow();
+                    break;
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
@@ -100,6 +125,6 @@ public class ExcelImportThreadPool implements CommandLineRunner {
         long endTime = System.currentTimeMillis();
         log.info("数据导入完成!");
         log.info("总计处理记录数：{} ", processedCount.get());
-        log.info("耗时: {} 毫秒", (endTime - startTime));
+        log.info("总耗时: {} 毫秒", (endTime - startTime));
     }
 }

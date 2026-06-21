@@ -5,6 +5,7 @@
 package com.vindasoft.order.configure;
 
 import com.vindasoft.order.domain.LoginUser;
+
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,10 +21,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * @Description: JWT认证令牌过滤器
- * 作用： 拦截所有http请求，从请求头中提取JWT token，验证并且设置用户信息
- * 相当于系统的安检员，检查每个访客的通行证（token），验证通过就放行
- *
+ * @Description: JWT认证令牌过滤器 作用： 拦截所有http请求，从请求头中提取JWT token，验证并且设置用户信息 相当于系统的安检员，检查每个访客的通行证（token），验证通过就放行
  * @author: jwd
  * @date: 2026-01-02
  */
@@ -44,6 +42,17 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
         throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+
+        if (isPublicPath(requestURI)) {
+            // log.debug("公开路径，跳过JWT验证: {}", requestURI);
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // String token = tokenService.getToken(request);
+        // log.debug("请求URI: {}, Authorization header: {}", requestURI, token != null ? "存在token" : "无token");
+
         // 1、从http请求中解析用户信息
         LoginUser loginUser = tokenService.getLoginUser(request);
 
@@ -53,18 +62,26 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                 // 3、验证token是否是否过期
                 tokenService.verifyToken(loginUser);
                 // 4、构建security认证令牌
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,
-                    null, loginUser.getAuthorities());
+                UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
                 // 5、设置认证详情
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 // 6、将认证信息设置到security上下文中
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                // log.debug("用户认证成功: {}", loginUser.getUsername());
             } catch (Exception e) {
+                // log.error("Token验证失败，URI: {}: ", requestURI, e);
                 // 7、处理认证失败的情况
                 SecurityContextHolder.clearContext();
             }
         }
         // 8、继续执行后续的过滤器： 无论是否成功执行，都要继续执行过滤器链
         chain.doFilter(request, response);
+    }
+
+    private boolean isPublicPath(String requestURI) {
+        return "/login".equals(requestURI) || "/register".equals(requestURI) || requestURI.startsWith(
+            "/public/") || requestURI.endsWith(".ico") || requestURI.endsWith(".png") || requestURI.endsWith(
+            ".jpg") || requestURI.endsWith(".css") || requestURI.endsWith(".js");
     }
 }

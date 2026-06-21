@@ -21,5 +21,7 @@ public class UserInfo {
 
     private String status;
 
+    private String avatar;
+
     private String remark;
 }

@@ -7,6 +7,7 @@ package com.vindasoft.order.service.impl;
 import com.vindasoft.order.domain.UserInfo;
 import com.vindasoft.order.mapper.UserManageMapper;
 import com.vindasoft.order.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

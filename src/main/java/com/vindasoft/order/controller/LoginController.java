@@ -10,8 +10,8 @@ import com.vindasoft.order.domain.LoginUser;
 import com.vindasoft.order.domain.UserInfo;
 import com.vindasoft.order.domain.response.CommonResult;
 import com.vindasoft.order.service.UserService;
-
 import com.vindasoft.order.utils.SecurityUtils;
+
 import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -41,12 +41,10 @@ public class LoginController {
      */
     @PostMapping("/login")
     public CommonResult login(@RequestBody LoginInfo loginInfo) {
-        CommonResult result = CommonResult.success();
+        CommonResult result = null;
 
         if (MDC.getCopyOfContextMap() != null) {
-            MDC.getCopyOfContextMap().forEach((key, value) ->
-                log.info("  Key: '" + key + "', Value: '" + value + "'")
-            );
+            MDC.getCopyOfContextMap().forEach((key, value) -> log.info("  Key: '" + key + "', Value: '" + value + "'"));
         } else {
             log.warn("MDC is empty");
         }
@@ -58,7 +56,7 @@ public class LoginController {
 
         // 2、根据用户名查询用户信息: 并校验用户密码参数
         UserInfo userInfo = userService.queryUserInfoByUserName(loginInfo.getUserName());
-        if (userInfo == null || !Objects.equals(userInfo.getPassword(),loginInfo.getPassword())) {
+        if (userInfo == null || !Objects.equals(userInfo.getPassword(), loginInfo.getPassword())) {
             result = CommonResult.error("用户名或密码错误");
             return result;
         }
@@ -68,7 +66,7 @@ public class LoginController {
 
         // 4、生成JWT令牌
         String token = tokenService.createToken(loginUser);
-        result = CommonResult.success("登录成功",token);
+        result = CommonResult.success("登录成功", token);
         return result;
     }
 
@@ -77,10 +75,19 @@ public class LoginController {
      */
     @PostMapping("/getUserInfo")
     public CommonResult getUserInfo() {
-        CommonResult result = CommonResult.success();
+        log.info("获取当前登录用户信息: getUserInfo()");
+        CommonResult result = null;
+
         String userId = SecurityUtils.getUserId();
-        UserInfo userInfo = userService.queryUserInfoByUserId(userId);
-        result.put("data",userInfo);
+        // 1、从http请求中解析用户信息
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        UserInfo userInfo = null;
+        if (loginUser != null) {
+            userInfo = loginUser.getUserInfo();
+        } else {
+            userInfo = userService.queryUserInfoByUserId(userId);
+        }
+        result = CommonResult.success("成功获取用户信息", userInfo);
         return result;
     }
 }

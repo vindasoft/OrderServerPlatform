@@ -8,17 +8,19 @@
                user_name as userName,
                password as password,
                status as status,
+               avatar,
                remark as remark
         from t_business_user_info t
         where t.user_name = #{userName}
     </select>
 
-    <!-- 根据用户名称查询用户信息 -->
+    <!-- 根据用户ID查询用户信息 -->
     <select id="queryUserInfoByUserId" resultType="UserInfo">
         select user_id  as userId,
                user_name as userName,
                password as password,
                status as status,
+               avatar,
                remark as remark
         from t_business_user_info t
         where t.user_id = #{userId}
@@ -30,6 +32,7 @@
                user_name as userName,
                password as password,
                status as status,
+               avatar,
                remark as remark
         from t_business_user_info t
         <where>
@@ -46,11 +49,13 @@
             user_name,
             password,
             status,
+            avatar,
             remark
         ) values(#{userId},
                  #{userName},
                  #{password},
                  #{status},
+                 #{avatar},
                  #{remark})
     </insert>
 
@@ -59,6 +64,7 @@
         update t_business_user_info
         set password=#{password},
             status=#{status},
+            avatar= #{avatar},
             remark=#{remark}
         where user_id = #{userId}
     </update>

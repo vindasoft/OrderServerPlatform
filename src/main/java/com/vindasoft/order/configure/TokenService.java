@@ -112,11 +112,16 @@ public class TokenService {
         // 2、判断token是否为空或者空白
         if (StringUtils.isBlank(token)) {
             // 用户未登录
-            log.error("用户未登录");
+            log.debug("用户未登录，请求URI: {}，请求头中未找到token", request.getRequestURI());
             return null;
         }
 
         try {
+            if (!isValidJwtFormat(token)) {
+                log.warn("Token格式不正确，请求URI: {}，收到的token长度: {}, token前50字符: {}", request.getRequestURI(),
+                    token.length(), token.length() > 50 ? token.substring(0, 50) : token);
+                return null;
+            }
             // 3、解析token，获取用户信息
             Claims claims = parseToken(token);
 
@@ -127,7 +132,7 @@ public class TokenService {
             return objectMapper.readValue(userJson, LoginUser.class);
         } catch (Exception e) {
             // 6、解析用户信息失败
-            log.error("解析用户信息失败", e);
+            log.error("解析用户信息失败，请求URI: {}，token: {}", request.getRequestURI(), token, e);
         }
         return null;
     }
@@ -137,8 +142,11 @@ public class TokenService {
      */
     public String getToken(HttpServletRequest request) {
         String token = request.getHeader(header);
+        log.debug("从请求头获取的原始token: {}", token != null ? token : "null");
+
         if (StringUtils.isNotBlank(token) && token.startsWith("Bearer ")) {
             token = token.substring(7);
+            log.debug("去除Bearer前缀后的token: {}", token != null ? token : "null");
         }
         return token;
     }
@@ -171,5 +179,20 @@ public class TokenService {
         if (expireTime <= nowTime) {
             throw new RuntimeException("Token已过期");
         }
+    }
+
+    private boolean isValidJwtFormat(String token) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+
+        int dotCount = 0;
+        for (char c : token.toCharArray()) {
+            if (c == '.') {
+                dotCount++;
+            }
+        }
+
+        return dotCount == 2;
     }
 }
